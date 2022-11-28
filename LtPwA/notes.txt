@@ -1,0 +1,49 @@
+Basic Computer Organization
+- The CPU(stands for Central Processing Unit) (also reffered to as the processor or microprocessor)
+- Working memory (usually reffered to as RAM(stands for Random Access Memory))
+- Permanent storage (HDD, SSD, USB sticks and etc.)
+- Peripherals (everything else)
+- System bus (everything that is connected to the CPU conencts through a BUS, or SYSTEM BUS)
+
+The common conceptual parts of a CPU are:
+- Registers
+- Control unit
+- Arithmetic and logic unit
+- Memory management unit
+- Caches
+
+Registers - tiny blocks of memory inside the processor itself. These are bits of data that the processor can access
+directly without waiting. Essentially what happens is that programs load data from memory into the registers, then process
+the data in the registers using various instructions, and then write the contents of those registers back out to memory.
+
+The Control Unit - sets the pacing for the chip. It handles the coordination of all the different parts of the chip. It handles
+the clock, which doesn't tell time, but is more like a drum beat of a pacemaker - it makes sure that everything operates at the
+same speed.
+
+the Arithmetic and Logic Unit (ALU) - where proccessing takes place. It does the additions, subtractions, comparisons, etc.
+the ALU is normally wired so that basic operations can be done with registers extremly quickly (typically in a single clock cycle).
+
+the Memory Management Unit - in a simple fashion, it manages the way that the processor sees and understands memory addresses.
+
+Caches - A cache is a piece of memory that holds other memory closer to the CPU. For instance, instructions are usually carried
+out in the same order that they are stored in memory. Therefore, rather than wait for the control unit to request the next instruction
+and then wait for the instruction to arrive from main memory, the CPU can preload a segment of memory that it thinks will be
+useful into a cache. That way, when the CPU asks for the next instruction, it doesn’t have to wait on the system bus to deliver
+the instruction from memory - it can just read it directly from the cache. CPUs implement all sorts of caches, each of which cache
+different things for different reasons, and even have different access speeds.
+
+The Fetch-Execute Cycle - the way that the processor runs programms is through the fetch-execute cycle. The computer operates
+by reading your program one instruction at a time. It knows which instruction to read through a special register known as
+the Instruction Pointer (or IP), which is also known as the Program Counter (or PC).
+The computer essentially runs an endless cycle of the following operations:
+- Read the instruction form the memory address specified by the instruction pointer.
+- Decode the instruction (i.e., figure out what the instruction means).
+- Advance the instruction pointer to the next instruction.
+- Perform the operation indicated by the instruction.
+Each instruction is extremely limited in its operation. Available instructions do operations like the following:
+- Load a value from memory into a register.
+- Store a value from a register into memory.
+- Do a single arithmetic operation.
+- Compare two values.
+- Got to a different location in the code (i.e., modify the instruction pointer) based on the result of a 
+previous comparison.
