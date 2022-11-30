@@ -32,6 +32,7 @@ useful into a cache. That way, when the CPU asks for the next instruction, it do
 the instruction from memory - it can just read it directly from the cache. CPUs implement all sorts of caches, each of which cache
 different things for different reasons, and even have different access speeds.
 
+
 The Fetch-Execute Cycle - the way that the processor runs programms is through the fetch-execute cycle. The computer operates
 by reading your program one instruction at a time. It knows which instruction to read through a special register known as
 the Instruction Pointer (or IP), which is also known as the Program Counter (or PC).
@@ -47,3 +48,59 @@ Each instruction is extremely limited in its operation. Available instructions d
 - Compare two values.
 - Got to a different location in the code (i.e., modify the instruction pointer) based on the result of a 
 previous comparison.
+
+
+The General-Purpose Registers
+The x86-64 ISA has 16 general-purpose registers. By "general purpose," I don’t mean
+that none of them have specific uses, but that, in the general case, you can specify these
+registers for the source or destination of many different instructions. Eight of those are
+carried over from the 32-bit architecture. These eight are divided into two classes.
+The first class of registers are four registers that we might call the computational
+registers. These registers are %rax, %rbx, %rcx, and %rdx.
+These registers are normally used for general computation. Additionally, the ability to access
+individual bytes of the registers can come in handy, as a lot of data is organized around individual bytes.
+For instance, %rbx has a 32-bit version called %ebx
+embedded in it, which has the original %bx embedded in that, whose individual high and
+low bytes can be referred to by %bh and %bl.
+
+%rax: This is the accumulator. It is the most widely used general-­
+purpose register for computation.
+
+%rbx: This is known as the "base register." This is often used for
+indexed addressing.
+
+%rcx: This is known as the "counter register." It is historically used
+for counts when doing repetitive code (loops).
+
+%rdx: This is known as the "data register." It has some special
+significance in certain arithmetic operations and input/output
+operations and is also sometimes used in some instructions in
+coordination with %rax, such as with the divq instruction.
+
+The next four registers are still considered "general purpose" because they can be
+used in computation, but they are actually focused on specific tasks. The first two (%rsi
+and %rdi) can be safely for general purposes, but it is best to leave the others for their
+special purpose. Note that, while each of these has a 32-bit and 16-bit version, you
+cannot access any individual bytes in these registers. For instance, the %rdi register has
+a 32-bit version (%edi) and a 16-bit version (%di), but there is no register that will give
+me any individual bytes from this register.
+
+%rsi: This is the "source index" register. It has special uses for
+working with longer spans of memory.
+
+%rdi: This is the "destination index" register. It is often used in
+conjunction with %rsi for working with longer spans of memory.
+
+%rbp: This is the "base pointer."
+
+%rsp: This is the "stack pointer."
+
+Finally, while the previous registers can trace their history back to the original 8086
+chip that started it all, the x86-64 ISA gives us eight new general-purpose registers. These
+are simply labeled as %r8 through %r15.
+Even though these registers didn’t exist in previous versions of the ISA, these
+registers also have 32-bit, 16-bit, and individual-byte versions. For instance, %r11 refers
+to the whole 64-bit version of the register. However, you can refer to the 32-bit version by
+specifying %r11d, the 16-bit version by specifying %r11w, and the least significant (low)
+byte by specifying %r11b. Each of the new general-purpose registers can be accessed in
+this way.
