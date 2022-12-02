@@ -46,13 +46,12 @@ Each instruction is extremely limited in its operation. Available instructions d
 - Store a value from a register into memory.
 - Do a single arithmetic operation.
 - Compare two values.
-- Got to a different location in the code (i.e., modify the instruction pointer) based on the result of a 
+- Go to a different location in the code (i.e., modify the instruction pointer) based on the result of a 
 previous comparison.
 
 
 The General-Purpose Registers
-The x86-64 ISA has 16 general-purpose registers. By "general purpose," I don’t mean
-that none of them have specific uses, but that, in the general case, you can specify these
+The x86-64 ISA has 16 general-purpose registers. In the general case, you can specify these
 registers for the source or destination of many different instructions. Eight of those are
 carried over from the 32-bit architecture. These eight are divided into two classes.
 The first class of registers are four registers that we might call the computational
@@ -104,3 +103,38 @@ to the whole 64-bit version of the register. However, you can refer to the 32-bi
 specifying %r11d, the 16-bit version by specifying %r11w, and the least significant (low)
 byte by specifying %r11b. Each of the new general-purpose registers can be accessed in
 this way.
+
+
+Some registers have a specific function that is maintained by the CPU itself.
+These are the special-purpose registers.
+
+%rip - Instruction Pointer. The instruction pointer simply points to the next memory location that the
+processor is going to process an instruction from. This lets the CPU know where to pull
+the next instruction from when the next clock cycle runs. During each instruction, the
+CPU will increment the instruction pointer to point to the next instruction—the one
+immediately after the current instruction. This register can be manipulated through jump instructions.
+A jump instruction tells the computer to alter the flow of the program by setting the instruction pointer to a value
+that is different from where the CPU was going to set it to. The most basic form of this
+instruction is simply jmp, which tells the processor the address of the next instruction
+you want to execute.
+
+%eflags - special-purpose register (conditions for jump instructions)
+Rather than thinking about %eflags as holding a single value, you usually think
+about the different bits of %eflags separately. Each bit holds a true/false status of a
+previous operation. Most of the bits of the %eflags register are for operating system usage and aren’t of
+extreme concern to us. However, there are two flags that come in useful continually:
+ZF: The zero flag is set to 1 if the result of the last arithmetic
+operation was zero, or 0 if it was not.
+CF: The carry flag is set to 1 if the result of the last arithmetic
+operation resulted in a “carry”—that is, the result was bigger than
+could be held in the destination register.
+What happens is that at the end of each arithmetic instruction (instructions like
+addX, mulX, but not movX), the processor sets the value of these status bits in the %eflags
+register. The typical way to make use of these flags is with a conditional jump statement. A
+conditional jump statement will jump based on the configuration of particular flags. If
+the condition matches, the jump will occur. Otherwise, the processor will just go to the
+next instruction as if nothing happened. Common jump instructions include
+jz: “Jump if Zero” (jump if the zero flag is set to 1).
+jnz: “Jump if Not Zero” (jump if the zero flag is set to 0).
+jc: “Jump if Carry” (jump if the carry flag is set to 1).
+jnc: “Jump if No Carry” (jump if the carry flag is set to 0).
