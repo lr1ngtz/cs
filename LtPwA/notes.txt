@@ -138,3 +138,20 @@ jz: “Jump if Zero” (jump if the zero flag is set to 1).
 jnz: “Jump if Not Zero” (jump if the zero flag is set to 0).
 jc: “Jump if Carry” (jump if the carry flag is set to 1).
 jnc: “Jump if No Carry” (jump if the carry flag is set to 0).
+
+
+Comparisons
+The cmpq instruction (and its relatives cmpb, cmpw, and cmpl) compares two numbers
+to tell which one is larger or if they are both equal. Internally, it performs the comparison
+by subtracting the numbers (but discarding the result rather than storing it) and then
+setting the flags accordingly. Then, there are special jump instructions that read the flags
+and know what that means in terms of which one was larger.
+After the cmpq instruction sets the flags, there are corresponding jump instructions
+that will test one or more of these flags to see whether or not it should jump. Given the
+command cmpq ARG1, ARG2
+je will jump if ARG2 equals ARG1.
+jne will jump if ARG2 does not equal ARG1.
+ja will jump if ARG2 is above (greater than) ARG1.
+jae will jump if ARG2 is above (greater than) or equal to ARG1.
+jb will jump if ARG2 is below (less than) than ARG1.
+jbe will jump if ARG2 is below (less than) or equal to ARG1.
