@@ -155,3 +155,52 @@ ja will jump if ARG2 is above (greater than) ARG1.
 jae will jump if ARG2 is above (greater than) or equal to ARG1.
 jb will jump if ARG2 is below (less than) than ARG1.
 jbe will jump if ARG2 is below (less than) or equal to ARG1.
+
+
+Addressing modes - An addressing mode is essentially the way that the CPU finds a value for an instruction.
+
+General Addressing Mode Syntax
+VALUE(BASEREG, IDXREG, MULTIPLIER)
+In this, VALUE is a fixed value, BASEREG and IDXREG are registers, and MULTIPLIER is a
+fixed multiplier, which can be 1, 2, 4, or 8 (it is 1 if left out).
+The memory address that this refers to is calculated as follows:
+address = VALUE + BASEREG + IDXREG * MULTIPLIER
+If a piece is left out, it is assumed to be zero (except for MULTIPLIER, which is
+assumed to be one).
+
+Immediate mode: This is when we put the value of interest
+directly in the instruction. For instance, in movq $5, %rax, the $
+indicates that it should use immediate mode. That is, the value is
+contained within the instruction itself.
+
+Register mode: This is when we are referring to a register to find
+or store a value. In movq $5, %rax, the %rax is a register.
+
+Direct memory mode: This is when we are referring to a value by
+its address. The address itself is part of the instruction. When we
+do movq first_value, %rbx, first_value is a direct memory
+address. (first_value just becomes a number when the assembler runs. It refers to the
+particular memory location, and we are treating it as an address. However, if we added a dollar
+sign in front of it, then it would be treated just as an immediate-mode number.)
+
+Register indirect mode: In this addressing mode, a register
+holds the value of the address to access. So, let’s say that %rbx held a memory address,
+and we wanted to take the contents of that memory address and move it to %rax. The
+command for this is movq (%rbx), %rax. If %rbx contains an invalid memory address,
+you’ll either wind up with junk in %rax, or if the memory location just doesn’t exist at all,
+it will cause an error and the program will abort.
+
+Indexed mode: Here, VALUE represents the address of an array, and
+IDXREG represents the index to the array, with MULTIPLIER
+representing the size of each array element. BASEREG is left out.
+
+Base pointer mode: This is also referred to as displacement
+mode. In this mode, BASEREG is known as the base pointer, and
+VALUE, rather than being an address, is a fixed offset from BASEREG
+(either positive or negative—negative values are fully supported
+here).
+
+Base pointer indexed mode: This mode makes use of all of the
+different components of the general formula. BASEREG is a register
+that points to a location; the location is offset by VALUE and then
+indexed by IDXREG, which is multiplied by MULTIPLIER.
