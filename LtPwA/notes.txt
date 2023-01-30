@@ -128,6 +128,13 @@ operation was zero, or 0 if it was not.
 CF: The carry flag is set to 1 if the result of the last arithmetic
 operation resulted in a “carry”—that is, the result was bigger than
 could be held in the destination register.
+OF: The overflow flag tells us that if we were intending the
+numbers to be used as signed numbers, we overflowed the values
+and now the sign is wrong.
+SF: The sign flag tells us whether the sign flag (the most significant
+bit) of the result was set after the instruction. Note that this is
+not the same as if the sign flag should have been set (i.e., in an
+overflow condition).
 What happens is that at the end of each arithmetic instruction (instructions like
 addX, mulX, but not movX), the processor sets the value of these status bits in the %eflags
 register. The typical way to make use of these flags is with a conditional jump statement. A
@@ -149,12 +156,25 @@ and know what that means in terms of which one was larger.
 After the cmpq instruction sets the flags, there are corresponding jump instructions
 that will test one or more of these flags to see whether or not it should jump. Given the
 command cmpq ARG1, ARG2
+
+UNSIGNED NUMBERS COMPARISON
 je will jump if ARG2 equals ARG1.
 jne will jump if ARG2 does not equal ARG1.
 ja will jump if ARG2 is above (greater than) ARG1.
 jae will jump if ARG2 is above (greater than) or equal to ARG1.
 jb will jump if ARG2 is below (less than) than ARG1.
 jbe will jump if ARG2 is below (less than) or equal to ARG1.
+
+SIGNED NUMBERS COMPARISON (cmp instruction is the same, but different jump instructions
+check different flags if you are treating the values as signed)
+jl: Jump if ARG2 is less than ARG1.
+jle: Jump if ARG2 is less than or equal to ARG1.
+jg: Jump if ARG2 is greater than ARG1.
+jge: Jump if ARG2 is greater than or equal to ARG1.
+
+While the unsigned jump evaluations (i.e., ja and jb and friends) are usually
+checking the carry flag (CF) and zero flag (ZF), the signed jump evaluations are also
+checking the sign flag (SF) and the overflow flag (OF).
 
 
 Addressing modes - An addressing mode is essentially the way that the CPU finds a value for an instruction.
@@ -268,3 +288,41 @@ is identical to ror, except that the bits that get shifted all the way
 off to the right do not come back in on the left, but instead zeroes
 get shifted in on the left-hand side.
 shl: This is the same as shr, but shifts to the left.
+
+Signed Numbers and Bitwise Operations
+
+The instruction to convert a positive value to a negative (and vice versa) is the neg
+family of instructions. neg instructions take a single operand which is both the source
+and destination of the operation. For instance, negq %rax will take the negative of %rax
+and store it back into %rax.
+
+If you needed bigger integers (i.e., more than 64 bits), it is fairly straightforward to
+do with multiple registers and/or multiple memory locations. Let us say that you want to
+work with 320-bit numbers (i.e., 5 quadwords big), and you wanted to add together two
+320-bit signed numbers. The basic process for this would be the following:
+1. Load the least significant 64 bits of each addend into registers.
+2. Perform an addq instruction. This will perform an addition and set
+the carry flags.
+3. Store the result.
+4. For the remaining bytes
+(a). Load in the next least significant bytes of each value.
+(b). Add them together with the adcq instruction. This instruction will not
+only add the values together, it will take into account the carry flag (CF)
+from the previous addition.
+(c). Store the result.
+5. After all the additions have occurred, check the overflow flag (OF)
+to see the result was bigger than 320 what can be kept in 320 bits.
+adcq - instruction not only adds the operands, it also adds the carry flag if it is set (and also sets
+the carry flags if appropriate). Note that the overflow flag only needs to be checked at the
+end. adc is setting it every time, but we only need to know the value at the very end.
+
+AND: This operation compares two bits, and the result is 1 if both
+bits are 1 and 0 otherwise. andb %al, %ab.
+OR: This operation compares two bits, and the result is 1 if
+either bit is 1 (or both bits are 1). orb(orq and etc.) %al, %ab.
+NOT: This operation has a single operand and simply flips the bit(s)
+(0 goes to 1 and 1 goes to 0). This is accomplished with the not
+family of instructions. notb %al will reverse all of the bits of %al.
+XOR: This means exclusive or. This is similar to OR except that if
+both values are 1, the result is 0. This is accomplished with the xor
+family of instructions.
