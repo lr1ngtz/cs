@@ -326,3 +326,27 @@ family of instructions. notb %al will reverse all of the bits of %al.
 XOR: This means exclusive or. This is similar to OR except that if
 both values are 1, the result is 0. This is accomplished with the xor
 family of instructions.
+NOR: A “nor” operation is the opposite of an “or” operation.
+Basically, whenever an “or” would return 1, the nor returns 0, and
+vice versa.
+NOT: The “not” operation only takes one operand. It simply
+returns the opposite bit for each bit position. If the bit was a 1, it
+returns 0. If it was a 0, it returns 1.
+There are a lot of uses for these instructions, but some typical uses are listed as follows:
+- The andq instruction is used for masking bits. That is, if there is a
+subset of bits we are interested in, we can use the andq instruction to
+set all other bits to zero. For instance, if I wanted to know the low-­
+order three bits of register %rcx, I could do it with the instruction andq
+$0b111, %rcx.
+- Many operations take an operand which has a set of “bit flags.” That
+is, each individual bit within a single quadword has a meaning.
+You can combine individual flags using the orq instruction. That is,
+each flag that is set in either operand will be set in the destination
+operand.
+- The most efficient way to load a register with the value of zero is to
+“exclusive or” it with itself. This is fast because the instruction can be
+encoded with a smaller number of bytes. So, to load zero into %rax
+efficiently, you can do xorq %rax, %rax. However, be aware that this
+does set flags.
+All these instructions (except notq) set flags, with the zero flag (ZF) being the most
+important.
